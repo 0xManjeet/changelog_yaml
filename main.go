@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"sort"
+	"strconv"
 
 	"gopkg.in/yaml.v2"
 )
@@ -48,7 +49,9 @@ func main() {
 
 	fmt.Fprintf(file, "# Changelog\n\nversioning format: `%s`\n\n", changelog.VersioningFormat)
 	sort.Slice(changelog.Versions, func(i, j int) bool {
-		return changelog.Versions[i].Build > changelog.Versions[j].Build
+		iInt, _ := strconv.Atoi(changelog.Versions[i].Build)
+		jInt, _ := strconv.Atoi(changelog.Versions[j].Build)
+		return iInt > jInt
 	})
 
 	for _, version := range changelog.Versions {
