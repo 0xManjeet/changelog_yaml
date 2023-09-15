@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 
 	"gopkg.in/yaml.v2"
 )
@@ -46,10 +47,13 @@ func main() {
 	defer file.Close()
 
 	fmt.Fprintf(file, "# Changelog\n\nversioning format: `%s`\n\n", changelog.VersioningFormat)
+	sort.Slice(changelog.Versions, func(i, j int) bool {
+		return changelog.Versions[i].Build > changelog.Versions[j].Build
+	})
 
 	for _, version := range changelog.Versions {
 
-		fmt.Fprintf(file, "## [%s] - [%s] - %s\n\n", version.Version, version.Build, version.Date)
+		fmt.Fprintf(file, "## v%s+%s - %s\n\n", version.Version, version.Build, version.Date)
 		if len(version.Changes.Added) > 0 {
 			fmt.Fprintln(file, "### Added")
 			fmt.Fprintln(file)
